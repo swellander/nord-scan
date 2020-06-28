@@ -16,8 +16,7 @@ from loading_spinner import Spinner
 # Constants
 # target = os.getenv('TARGET')
 target = "nord"
-url = "https://seattle.craigslist.org/search/sss?query=nord&sort=rel&srchType=T&bundleDuplicates=1&searchNearby=2&nearbyArea=217&nearbyArea=233&nearbyArea=350&nearbyArea=322&nearbyArea=94&nearbyArea=324&nearbyArea=654&nearbyArea=655&nearbyArea=466&nearbyArea=321&nearbyArea=9&nearbyArea=368&nearbyArea=459&nearbyArea=232&nearbyArea=461&nearbyArea=95&nearbyArea=325&nearbyArea=246"
-# url = "https://seattle.craigslist.org/search/sss?query=nord&sort=rel&srchType=T&searchNearby=2"
+url = "https://seattle.craigslist.org/search/sss?query=nord&sort=rel&srchType=T&postedToday=1&bundleDuplicates=1&searchNearby=2&nearbyArea=217&nearbyArea=233&nearbyArea=350&nearbyArea=94&nearbyArea=324&nearbyArea=654&nearbyArea=655&nearbyArea=466&nearbyArea=321&nearbyArea=9&nearbyArea=368&nearbyArea=459&nearbyArea=232&nearbyArea=461&nearbyArea=95&nearbyArea=325&nearbyArea=246"
 list_selector = os.getenv('LIST_SELECTOR')
 item_selector = os.getenv('ITEM_SELECTOR')
 success_msg = os.getenv('SUCCESS_MSG', f'Success! Your target was found at {url}')
@@ -86,7 +85,7 @@ def run_scan():
 while True:
     try:
         run_scan()
-        time.sleep(20)
+        time.sleep(2) # 1 hour
     except:
         send('Something went wrong...')
 
