@@ -7,24 +7,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
 from sms import send
-# from dotenv import load_dotenv
 from loading_spinner import Spinner
 
-# Load environment variables
-# load_dotenv()
-
-# Constants
-# target = os.getenv('TARGET')
 target = "nord"
 url = "https://seattle.craigslist.org/search/sss?query=nord&sort=rel&srchType=T&postedToday=1&bundleDuplicates=1&searchNearby=2&nearbyArea=217&nearbyArea=233&nearbyArea=350&nearbyArea=94&nearbyArea=324&nearbyArea=654&nearbyArea=655&nearbyArea=466&nearbyArea=321&nearbyArea=9&nearbyArea=368&nearbyArea=459&nearbyArea=232&nearbyArea=461&nearbyArea=95&nearbyArea=325&nearbyArea=246"
-list_selector = os.getenv('LIST_SELECTOR')
-item_selector = os.getenv('ITEM_SELECTOR')
-success_msg = os.getenv('SUCCESS_MSG', f'Success! Your target was found at {url}')
-
-
-def item_is_in_list(list_items=[]):
-    return any(target.lower() in item.text.lower() for item in list_items)
-
 
 def get_gecko_driver():
     firefox_bin = os.getenv('GOOGLE_CHROME_SHIM', '/Applications/Firefox.app')
@@ -34,7 +20,6 @@ def get_gecko_driver():
     return webdriver.Firefox(
         executable_path=executable_path, options=options
     )
-
 
 cache = {}
 
@@ -85,7 +70,7 @@ def run_scan():
 while True:
     try:
         run_scan()
-        time.sleep(2) # 1 hour
+        time.sleep(3600) # 1 hour
     except:
         send('Something went wrong...')
 
