@@ -16,9 +16,8 @@ from loading_spinner import Spinner
 # Constants
 # target = os.getenv('TARGET')
 target = "nord"
-url = os.getenv('MONITORED_URL')
 url = "https://seattle.craigslist.org/search/sss?query=nord&sort=rel&srchType=T&bundleDuplicates=1&searchNearby=2&nearbyArea=217&nearbyArea=233&nearbyArea=350&nearbyArea=322&nearbyArea=94&nearbyArea=324&nearbyArea=654&nearbyArea=655&nearbyArea=466&nearbyArea=321&nearbyArea=9&nearbyArea=368&nearbyArea=459&nearbyArea=232&nearbyArea=461&nearbyArea=95&nearbyArea=325&nearbyArea=246"
-# url = "https://seattle.craigslist.org/search/sss?query=nord&sort=rel&srchType=T&postedToday=1&bundleDuplicates=1&searchNearby=2&nearbyArea=217&nearbyArea=233&nearbyArea=350&nearbyArea=322&nearbyArea=94&nearbyArea=324&nearbyArea=654&nearbyArea=655&nearbyArea=466&nearbyArea=321&nearbyArea=9&nearbyArea=368&nearbyArea=459&nearbyArea=232&nearbyArea=461&nearbyArea=95&nearbyArea=325&nearbyArea=246"
+# url = "https://seattle.craigslist.org/search/sss?query=nord&sort=rel&srchType=T&searchNearby=2"
 list_selector = os.getenv('LIST_SELECTOR')
 item_selector = os.getenv('ITEM_SELECTOR')
 success_msg = os.getenv('SUCCESS_MSG', f'Success! Your target was found at {url}')
@@ -37,6 +36,8 @@ def get_gecko_driver():
         executable_path=executable_path, options=options
     )
 
+
+cache = {}
 
 def run_scan():
     print(f'Scanning for target: {target}')
@@ -59,19 +60,31 @@ def run_scan():
     first_page = BeautifulSoup(driver.page_source, features="html.parser")
 
     keyboards = first_page.findAll('li', {'class': 'result-row'})
-    import pdb; pdb.set_trace()
 
-    # If searching for item within a list
-    if list_selector:
-        list_items = first_page.find_all(list_selector)
-        if item_is_in_list(list_items):
-            print('Item found!')
-            send(success_msg)
-            print(f'Text notification sent to {os.getenv("TO_NUMBER")}')
-        else:
-            print(f'Scanned {len(list_items)} items. Item not found :(')
-        
-    else:
-        raise Exception('Must supply a value for LIST_SELECTOR')
+    num_hits = len(keyboards)
+    print(f'{num_hits} hits')
 
-run_scan()
+    for keyboard in keyboards:
+        title = keyboard.find_all('a', {'class': 'result-title'})[0].text
+        price = keyboard.find_all('span', {'class': 'result-price'})[0].text
+        time_posted = keyboard.find_all('time', {'class': 'result-date'})[0].get('datetime')
+        link = keyboard.find_all('a', {'class': 'result-title'})[0].get('href')
+    
+        try:
+            location = keyboard.find_all('span', {'class': 'nearby'})[0].text
+        except IndexError:
+            location = keyboard.find_all('span', {'class': 'result-hood'})[0].text
+    
+        msg = f'{title}\n{price}\nNear {location}\nPosted {time_posted}\n{link}'
+
+        if not cache.get(msg):
+            cache[msg] = msg
+            send(msg)
+
+
+
+try:
+    run_scan()
+    run_scan()
+except:
+    send('Something went wrong...')
