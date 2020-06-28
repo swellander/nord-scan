@@ -83,8 +83,10 @@ def run_scan():
 
 
 
-try:
-    run_scan()
-    run_scan()
-except:
-    send('Something went wrong...')
+while True:
+    try:
+        run_scan()
+        time.sleep(20)
+    except:
+        send('Something went wrong...')
+
