@@ -70,7 +70,7 @@ def run_scan():
 while True:
     try:
         run_scan()
-        time.sleep(3600) # 1 hour
+        time.sleep(600) # 10 min
     except:
         send('Something went wrong...')
 
