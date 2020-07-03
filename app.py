@@ -7,6 +7,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
 from sms import send
+from logger import logger
+
 from loading_spinner import Spinner
 
 target = "nord"
@@ -24,9 +26,9 @@ def get_gecko_driver():
 cache = {}
 
 def run_scan():
-    print(f'Scanning for target: {target}')
-    print(f'at url: {url}')
-    print('====================================================')
+    logger.info(f'Scanning for target: {target}')
+    logger.info(f'at url: {url}')
+    logger.info('====================================================')
 
     driver = get_gecko_driver()
     driver.implicitly_wait(3000)
@@ -35,18 +37,18 @@ def run_scan():
     num_jobs = 0
 
     # Wait for page to load
-    print('Waiting for page to load')
+    logger.info('Waiting for page to load')
     # with Spinner():
     #     time.sleep(10)
-    print('Page loaded')
+    logger.info('Page loaded')
 
-    print('Scanning')
+    logger.info('Scanning')
     first_page = BeautifulSoup(driver.page_source, features="html.parser")
 
     keyboards = first_page.findAll('li', {'class': 'result-row'})
 
     num_hits = len(keyboards)
-    print(f'{num_hits} hits')
+    logger.info(f'{num_hits} hits')
 
     for keyboard in keyboards:
         title = keyboard.find_all('a', {'class': 'result-title'})[0].text
@@ -72,5 +74,6 @@ while True:
         run_scan()
         time.sleep(3600) # 1 hour
     except:
+        logger.error('Something broke')
         send('Something went wrong...')
 

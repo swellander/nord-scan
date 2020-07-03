@@ -1,5 +1,6 @@
 import os
 import smtplib
+from logger import logger
 
 carriers = {
 	'att':    '@mms.att.net',
@@ -23,9 +24,9 @@ def send(message):
 	server.starttls()
 	server.login(auth[0], auth[1])
 
-	print("Sending message...")
+	logger.info("Sending message...")
 
 	# Send text message through SMS gateway of destination number
 	server.sendmail( auth[0], to_number_address, message)
 
-	print("Message sent.")
+	logger.info("Message sent.")
