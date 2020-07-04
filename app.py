@@ -2,6 +2,7 @@ import re
 import os
 import time
 import requests
+import traceback
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
@@ -68,12 +69,11 @@ def run_scan():
             send(msg)
 
 
-
 while True:
     try:
         run_scan()
         time.sleep(600) # 10 min
-    except:
-        logger.error('Something broke')
-        send('Something went wrong...')
+    except Exception as err:
+        logger.error(traceback.format_exc())
+        send('Something went wrong. Check logs')
 
