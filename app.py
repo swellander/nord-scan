@@ -72,8 +72,15 @@ def run_scan():
 while True:
     try:
         run_scan()
-        time.sleep(600) # 10 min
+        if cache.get('error'):
+            send('Back up and running.')
+            cache['error'] = False
+
     except Exception as err:
         logger.error(traceback.format_exc())
-        send('Something went wrong. Check logs')
+        if not cache.get('error'):
+            send('Something went wrong. Check logs.')
+            cache['error'] = True
+
+    time.sleep(600) # 10 min
 
